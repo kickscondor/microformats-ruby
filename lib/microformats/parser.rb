@@ -9,22 +9,23 @@ module Microformats
 
     def parse(html, base: nil, headers: {})
       @http_headers = {}
+      html = read_html(html, headers: headers)
+      document(Nokogiri::HTML(html), base: base)
+    end
 
+    def document(doc, base: nil)
+      @http_headers ||= {}
       @items = []
       @rels = {}
       @rel_urls = {}
 
       @alternates = []
-
       @base = base
 
-      html = read_html(html, headers: headers)
-      document = Nokogiri::HTML(html)
-
-      found_base = parse_base(document)
+      found_base = parse_base(doc)
       @base = found_base unless found_base.nil?
 
-      document.traverse do |node|
+      doc.traverse do |node|
         if !node.attribute('src').nil?
           absolute_url = Microformats::AbsoluteUri.new(node.attribute('src').value.to_s, base: @base).absolutize
           node.attribute('src').value = absolute_url.to_s
@@ -34,8 +35,8 @@ module Microformats
         end
       end
 
-      parse_node(document)
-      parse_rels(document)
+      parse_node(doc)
+      parse_rels(doc)
 
       Collection.new('items' => @items, 'rels' => @rels, 'rel-urls' => @rel_urls)
     end

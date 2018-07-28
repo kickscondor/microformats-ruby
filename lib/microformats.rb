@@ -19,6 +19,10 @@ module Microformats
       Parser.new.parse(html, base: base)
     end
 
+    def document(doc)
+      Parser.new.document(doc)
+    end
+
     def read_html(html)
       Parser.new.read_html(html)
     end
