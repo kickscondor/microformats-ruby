@@ -1,6 +1,7 @@
 require 'nokogiri'
 require 'open-uri'
 require 'json'
+require 'set'
 
 require 'microformats/version'
 require 'microformats/absolute_uri'
@@ -26,7 +27,7 @@ module Microformats
     def read_html(html)
       Parser.new.read_html(html)
     end
-  end # class << self
+  end
 
   class InvalidPropertyPrefix < StandardError; end
 end
